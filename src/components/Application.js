@@ -1,43 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { nanoid } from 'nanoid';
-
-import List from './List';
-import Form from './Form';
+import { Route, Routes } from 'react-router-dom';
+import RegisterPage from '../pages/Register';
+import Login from '../pages/Login';
+import Header from './Header';
 
 const Application = () => {
-  const initialState = JSON.parse(localStorage.tasks || `[]`);
-  const [tasks, setTasks] = useState(initialState);
+  const [userInfo, setUserInfo] = useState();
+
   useEffect(() => {
-    localStorage.tasks = JSON.stringify(tasks);
-    console.log('useEffect');
-  }, [tasks]);
+    const userInfo = localStorage.userInfo && JSON.parse(localStorage.userInfo);
 
-  const addTask = (name, description, isCompleted) => {
-    setTasks((prevTasks) => {
-      return [...prevTasks, { name, description, isCompleted, id: nanoid() }];
-    });
-  };
-
-  const deleteTask = (id) => {
-    setTasks((prevTasks) => {
-      return prevTasks.filter((task) => task.id !== id);
-    });
-  };
-
-  const testHandler = () => {
-    setTasks((prevTasks) => {
-      const { name, isCompleted, id } = prevTasks[0];
-      return [
-        { name, description: 'tset', isCompleted, id },
-        ...prevTasks.slice(1),
-      ];
-    });
-  };
+    if (userInfo) {
+      setUserInfo(userInfo);
+    }
+  }, [localStorage, setUserInfo]);
 
   return (
-    <div onClick={testHandler}>
-      <Form addTask={addTask} />
-      <List tasks={tasks} deleteTask={deleteTask} />
+    <div className="application">
+      <Header userInfo={userInfo} />
+      <Routes>
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/login" element={<Login setUserInfo={setUserInfo} />} />
+      </Routes>
     </div>
   );
 };
