@@ -1,12 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import ConfirmationModal from '../ConfirmationModal';
 
-const Header = ({ userInfo }) => {
+const Header = ({ userInfo, logoutUser }) => {
+  const [modalState, setModalState] = useState();
+
+  const handleLogout = () => {
+    setModalState({
+      isOpen: true,
+      title: 'You was log out',
+      handleOk: () => {
+        logoutUser();
+        setModalState((prevState) => ({
+          ...prevState,
+          isOpen: false,
+        }));
+      },
+      handleCancel: () => {
+        setModalState((prevState) => ({
+          ...prevState,
+          isOpen: false,
+        }));
+      },
+    });
+  };
+
   return (
     <header>
       <Link to="/">Projects</Link>
+      <Link to="/create">Create project</Link>
       {userInfo ? (
-        <div>{userInfo.username}</div>
+        <div>
+          {userInfo.username}
+          <button onClick={handleLogout}>logout</button>
+        </div>
       ) : (
         <nav>
           <ul>
@@ -19,6 +46,7 @@ const Header = ({ userInfo }) => {
           </ul>
         </nav>
       )}
+      <ConfirmationModal {...modalState} />
     </header>
   );
 };

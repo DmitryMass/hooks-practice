@@ -8,6 +8,7 @@ module.exports = {
     path: resolve(__dirname, 'build'),
     filename: '[name]-[fullhash].js',
     clean: true,
+    publicPath: '/',
   },
   module: {
     rules: [
